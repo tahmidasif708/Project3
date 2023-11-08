@@ -41,6 +41,14 @@ bool g_game_is_running = true;
 ShaderProgram g_shader_program;
 glm::mat4 g_view_matrix, g_model_matrix, g_projection_matrix;
 
+
+const char PLAYER_SPRITE1_FILEPATH[] = "/Users/tahmidasif/Desktop/Project3/LunarLander/LunarLander/Luigi.png";
+const char PLAYER_SPRITE2_FILEPATH[] = "/Users/tahmidasif/Desktop/Project3/LunarLander/LunarLander/platform.png";
+const char PLAYER_SPRITE3_FILEPATH[] = "/Users/tahmidasif/Desktop/Project3/LunarLander/LunarLander/grass.png";
+const char PLAYER_SPRITE4_FILEPATH[] = "/Users/tahmidasif/Desktop/Project3/LunarLander/LunarLander/block.png";
+const char PLAYER_SPRITE5_FILEPATH[] = "/Users/tahmidasif/Desktop/Project3/LunarLander/LunarLander/font.png";
+
+
 const char V_SHADER_PATH[] = "shaders/vertex_textured.glsl",
            F_SHADER_PATH[] = "shaders/fragment_textured.glsl";
 
@@ -68,7 +76,7 @@ GLuint load_texture(const char* filePath) {
 
 void initialise() {
     SDL_Init(SDL_INIT_VIDEO);
-    g_display_window = SDL_CreateWindow("Lunar Lander", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 640, 480, SDL_WINDOW_OPENGL);
+    g_display_window = SDL_CreateWindow("LuigiLander", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 640, 480, SDL_WINDOW_OPENGL);
     SDL_GLContext context = SDL_GL_CreateContext(g_display_window);
     SDL_GL_MakeCurrent(g_display_window, context);
     
@@ -89,7 +97,6 @@ void initialise() {
     
     glUseProgram(g_shader_program.get_program_id());
     
-    // light cyan
     glClearColor(1.9f, 1.0f, 1.0f, 1.0f); // Change color
     glEnable(GL_BLEND);
 
@@ -97,19 +104,19 @@ void initialise() {
    
     // Initialize Game Objects
     
-    // Initialize Bird
+    // Luigi
     g_game_state.player = new Entity();
     g_game_state.player->position = glm::vec3(0, 4.5f, 0);
     g_game_state.player->movement = glm::vec3(0);
     g_game_state.player->acceleration = glm::vec3(0, -0.91f, 0);
     g_game_state.player->speed = 1.5f;
-    g_game_state.player->textureID = load_texture("bird_lander.png");
+    g_game_state.player->textureID = load_texture(PLAYER_SPRITE1_FILEPATH);
         
-    // Initialize Base Tiles
+    // Platform
     g_game_state.platforms = new Entity[PLATFORM_COUNT + OBS_COUNT];
-    GLuint basePlatformTextureID = load_texture("platformPack_tile002.png");
-    GLuint grassPlatformTextureID = load_texture("platformPack_tile045.png");
-    GLuint obstaclePlatformTextureID = load_texture("platformPack_tile039.png");
+    GLuint platPlatformTextureID = load_texture(PLAYER_SPRITE2_FILEPATH);
+    GLuint grassPlatformTextureID = load_texture(PLAYER_SPRITE3_FILEPATH);
+    GLuint blockPlatformTextureID = load_texture(PLAYER_SPRITE4_FILEPATH);
     
     float x_pos_base = -4.5f;
     float x_pos = -2.5f;
@@ -124,13 +131,13 @@ void initialise() {
             x_pos_base += 1;
         }
         else if (i > 9) {
-            g_game_state.platforms[i].textureID = obstaclePlatformTextureID;
+            g_game_state.platforms[i].textureID = blockPlatformTextureID;
             g_game_state.platforms[i].position = glm::vec3(x_pos, y_pos, 0);
             x_pos += 2.5;
             y_pos -= 1;
         }
         else {
-            g_game_state.platforms[i].textureID = basePlatformTextureID;
+            g_game_state.platforms[i].textureID = platPlatformTextureID;
             g_game_state.platforms[i].position = glm::vec3(x_pos_base, -3.25, 0);
             x_pos_base += 1;
         }
@@ -147,7 +154,7 @@ void draw_text(ShaderProgram *g_shader_program, GLuint fontTextureID, std::strin
     float height = 1.0f / 16.0f;
 
     std::vector<float> vertices;
-    std::vector<float> texCoords;
+    std::vector<float> texture_coordinates;
 
     for (int i = 0; i < text.size(); i++) {
         int index = (int)text[i];
@@ -164,7 +171,7 @@ void draw_text(ShaderProgram *g_shader_program, GLuint fontTextureID, std::strin
             offset + (-0.5f * size), -0.5f * size,
         });
         
-        texCoords.insert(texCoords.end(), {
+        texture_coordinates.insert(texture_coordinates.end(), {
             u, v,
             u, v + height,
             u + width, v,
@@ -173,7 +180,7 @@ void draw_text(ShaderProgram *g_shader_program, GLuint fontTextureID, std::strin
             u, v + height,
         });
 
-    } // end of for loop
+    }
     
     glm::mat4 fontModelMatrix = glm::mat4(1.0f);
     g_model_matrix = glm::translate(fontModelMatrix, position);
@@ -181,16 +188,16 @@ void draw_text(ShaderProgram *g_shader_program, GLuint fontTextureID, std::strin
     
     glUseProgram(g_shader_program->get_program_id());
 
-    glVertexAttribPointer(g_shader_program->positionAttribute, 2, GL_FLOAT, false, 0, vertices.data());
-    glEnableVertexAttribArray(g_shader_program->positionAttribute);
+    glVertexAttribPointer(g_shader_program->get_position_attribute(), 2, GL_FLOAT, false, 0, vertices.data());
+    glEnableVertexAttribArray(g_shader_program->get_position_attribute());
 
-    glVertexAttribPointer(g_shader_program->get_tex_coordinate_attribute, 2, GL_FLOAT, false, 0, texCoords.data());
-    glEnableVertexAttribArray(g_shader_program->get_tex_coordinate_attribute);
+    glVertexAttribPointer(g_shader_program->get_tex_coordinate_attribute(), 2, GL_FLOAT, false, 0, texture_coordinates.data());
+    glEnableVertexAttribArray(g_shader_program->get_tex_coordinate_attribute());
 
     glDrawArrays(GL_TRIANGLES, 0, (int)(text.size() * 6));
 
-    glDisableVertexAttribArray(g_shader_program->positionAttribute);
-    glDisableVertexAttribArray(g_shader_program->get_tex_coordinate_attribute);
+    glDisableVertexAttribArray(g_shader_program->get_position_attribute());
+    glDisableVertexAttribArray(g_shader_program->get_tex_coordinate_attribute());
 }
 
 void process_input() {
@@ -207,14 +214,12 @@ void process_input() {
             case SDL_KEYDOWN:
                 switch (event.key.keysym.sym) {
                     case SDLK_LEFT:
-                        // Move the player left
                         break;
                         
                     case SDLK_RIGHT:
-                        // Move the player right
                         break;
                 }
-                break; // SDL_KEYDOWN
+                break;
         }
     }
     
@@ -237,11 +242,11 @@ void process_input() {
     else if ((g_game_state.player->CheckCollision(&g_game_state.platforms[6])) || (g_game_state.player->CheckCollision(&g_game_state.platforms[7])) || (g_game_state.player->CheckCollision(&g_game_state.platforms[8]))) {
         
         g_game_state.player->collidedGrass = true;
-        std::cout << "Bird is Safe!!\n";
+        std::cout << "Luigi is Safe!\n";
     }
     else {
         g_game_state.player->isSafe = false;
-        std::cout << "Game Over\n";
+        std::cout << "Game Over!\n";
     }
 }
 
@@ -268,19 +273,20 @@ void update() {
     accumulator = deltaTime;
 }
 
+// ************************************ FIX THIS!!!!
 void render() {
     glClear(GL_COLOR_BUFFER_BIT);
 
     for (int i = 0; i < PLATFORM_COUNT; i++) {
         g_game_state.platforms[i].render(&g_shader_program);
     }
-    
+
     if (g_game_state.player->collidedGrass == true) {
-        draw_text(&g_shader_program, load_texture("font1.png"), "Mission Successful!", 0.5f, -0.25f, glm::vec3(0, 0, 0));
+        draw_text(&g_shader_program, load_texture(PLAYER_SPRITE5_FILEPATH), "MISSION ACCOMPLISHED", 0.5f, -0.25f, glm::vec3(0, 0, 0));
         g_game_state.player->isActive = false;
     }
     else if (g_game_state.player->isSafe == false) {
-        draw_text(&g_shader_program, load_texture("font1.png"), "Mission Failed :-(", 0.5f, -0.25f, glm::vec3(0, 0, 0));
+        draw_text(&g_shader_program, load_texture(PLAYER_SPRITE5_FILEPATH), "MISSION FAILED", 0.5f, -0.25f, glm::vec3(0, 0, 0));
         g_game_state.player->isActive = false;
     }
     
@@ -288,6 +294,8 @@ void render() {
     
     SDL_GL_SwapWindow(g_display_window);
 }
+// ************************************ FIX THIS!!!!
+
 
 void shutdown() {
     SDL_Quit();
