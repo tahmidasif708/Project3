@@ -46,7 +46,7 @@ const char PLAYER_SPRITE1_FILEPATH[] = "/Users/tahmidasif/Desktop/Project3/Lunar
 const char PLAYER_SPRITE2_FILEPATH[] = "/Users/tahmidasif/Desktop/Project3/LunarLander/LunarLander/platform.png";
 const char PLAYER_SPRITE3_FILEPATH[] = "/Users/tahmidasif/Desktop/Project3/LunarLander/LunarLander/grass.png";
 const char PLAYER_SPRITE4_FILEPATH[] = "/Users/tahmidasif/Desktop/Project3/LunarLander/LunarLander/block.png";
-const char PLAYER_SPRITE5_FILEPATH[] = "/Users/tahmidasif/Desktop/Project3/LunarLander/LunarLander/font.png";
+const char PLAYER_SPRITE5_FILEPATH[] = "/Users/tahmidasif/Desktop/Project3/LunarLander/LunarLander/font1.png";
 
 
 const char V_SHADER_PATH[] = "shaders/vertex_textured.glsl",

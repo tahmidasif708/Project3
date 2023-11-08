@@ -50,7 +50,7 @@
 		B79AE5842AFC241900F74494 /* block.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = block.png; sourceTree = "<group>"; };
 		B79AE5852AFC250400F74494 /* grass.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = grass.png; sourceTree = "<group>"; };
 		B79AE5862AFC275400F74494 /* platform.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = platform.png; sourceTree = "<group>"; };
-		B79AE58C2AFC3FAF00F74494 /* font.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = font.png; sourceTree = "<group>"; };
+		B7CF43C52AFC52330049EF42 /* font1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = font1.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -89,7 +89,7 @@
 		B79AE5662AF989DB00F74494 /* LunarLander */ = {
 			isa = PBXGroup;
 			children = (
-				B79AE58C2AFC3FAF00F74494 /* font.png */,
+				B7CF43C52AFC52330049EF42 /* font1.png */,
 				B79AE5862AFC275400F74494 /* platform.png */,
 				B79AE5852AFC250400F74494 /* grass.png */,
 				B79AE5842AFC241900F74494 /* block.png */,
